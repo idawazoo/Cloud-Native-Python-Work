@@ -71,18 +71,18 @@ def list_tweets():
     api_list=[]
     cusor = conn.execute("SELECT username, body, tweet_time, id from tweets")
     data = cusor.fetchall()
-    if data != 0:
-        for row in cusor:
+    if len(data) != 0:
+        for row in data:
             tweets = {}
             tweets['Tweet By'] = row[0]
             tweets['Body'] = row[1]
             tweets['Timestamp'] = row[2]
             tweets['id'] = row[3]
+            print(tweets)
             api_list.append(tweets)
-    else:
-        return api_list
 
     conn.close()
+
     return jsonify({'tweets_list' : api_list})
 
 @app.route('/api/v2/tweets', methods=['POST'])
