@@ -12,3 +12,6 @@ class FlaskappTest(unittest.TestCase):
 
         # assert the status code of the response 
         self.assertEqual(result.status_code, 200) 
+    def test_addtweets_status_code(self):
+        result = self.app.post('/api/v2/tweets', data='{"username":"Tagning", "body":"Wow! Is it working #testing"}', content_type='application/json')
+        self.assertEqual(result.status_code, 200)
