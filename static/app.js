@@ -44,7 +44,7 @@ function UserListViewModel() {
             success: function(data) {
                 alert("success")
                 console.log("Push to users array");
-                self.push(new User({
+                self.user_list.push(new User({
                     name: data.name,
                     username: data.username,
                     email: data.email,
