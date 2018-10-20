@@ -5,8 +5,8 @@ import cookie from 'react-cookies';
 class Main extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { userId: cookie.load('session') }; //needs a session
-        this.state = { tweets: [
+        this.state = { userId: cookie.load('session') };
+        this.state.tweets = [
             {
                 'ids' : 1, 
                 'name': 'guest', 
@@ -17,7 +17,7 @@ class Main extends React.Component {
                 'name': 'guest', 
                 'body': '"whatever." - Paulo Coelho #Motivation'
             }            
-        ]}
+        ]
     }
 
     /*
@@ -41,7 +41,7 @@ class Main extends React.Component {
             contentType: 'application/json',
             type: 'POST',
             data: JSON.stringify({
-                'username': "idawazoo",
+                'username': "who?",
                 'body': tweet,
             }),
             success: function(data) {

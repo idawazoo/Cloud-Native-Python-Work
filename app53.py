@@ -352,6 +352,8 @@ def get_tweets():
 @app.route('/api/v2/tweets', methods=['POST'])
 def add_tweets():
 
+    print("add_tweets:{}".format(request.json))
+
     user_tweet = {}
     if not request.json or not 'username' in request.json or not 'body' in request.json:
         abort(400)
@@ -517,7 +519,7 @@ def signup():
             api_list.append(str(i))
         if api_list == []:
             users.insert({
-                "emaill":request.form['email'],
+                "email":request.form['email'],
                 "id":random.randint(1,1000),
                 "name":request.form['name'],
                 "password":bcrypt.hashpw(request.form['pass'].encode('utf-8'),
@@ -530,6 +532,57 @@ def signup():
         return 'That user already exists'
     else:
         return  render_template('signup.html')
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    users = connection.cloud_native.users
+    existing_users = users.find({
+        "username" : session['username']
+    })
+    if request.method=='POST':
+        api_list=[]
+
+        for i in existing_users:
+            api_list.append(str(i))
+        user = {}
+        print(api_list)
+        if api_list != []:
+            print (request.form['email'])
+            user['email'] = request.form['email']
+            user['name']= request.form['name'] 
+
+            plain_pass = request.form['pass']
+            encrypted = bcrypt.hashpw(plain_pass.encode('utf-8'), bcrypt.gensalt())
+
+            user['password']=encrypted
+            users.update(
+                {
+                    'username' : session['username'],
+                },
+                {
+                    '$set' : user
+                }
+            )
+        else:
+            return 'User not found!'
+
+        return redirect(url_for('index'))
+    elif request.method=='GET':
+        user = []
+        print (session['username'])
+        for i in existing_users: 
+            user.append(i)       
+        print (user[0])  
+        return render_template('profile.html',
+            name=user[0]['name'],
+            username=user[0]['username'],
+            password=user[0]['password'],
+            email=user[0]['email'])
+
+@app.route('/logout')
+def logout():
+    session['logged_in'] = False
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     create_mongodatabase() 
