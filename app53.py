@@ -11,6 +11,7 @@ from flask import current_app
 import flask
 from pymongo import MongoClient
 import random
+import bcrypt
 
 app = Flask(__name__)
 app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
@@ -482,14 +483,53 @@ def do_admin_login():
         api_list.append(i)
     print(api_list)
     if api_list != []:
-        if api_list[0]['password'].decode('utf-8') == bcrypt.hashpw(request.form['password'].encode('utf-8'),
-                                                                    api_list[0]['password']):
+        db_password = api_list[0]['password'].decode('utf-8')
+        form_password = request.form['password'].encode('utf-8')
+        hashed_form_password = bcrypt.hashpw(request.form['password'].encode('utf-8'),
+                                             api_list[0]['password']).decode('utf-8')
+        print("db password:{}".format(db_password))
+        print("form password:{}".format(form_password))
+        print("form hashed password:{}".format(hashed_form_password))
+
+        if db_password == hashed_form_password:
             session['logged_in'] = api_list[0]['username']
             return redirect(url_for('index'))
     else:
         flash("Invalid Authentication")
 
     return "Invalid User!"
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        users = connection.cloud_native.users
+        api_list=[]
+        existing_user = users.find({ '$or': [
+            {
+                "username": request.form['username']
+            },
+            {
+                "email": request.form['email']
+
+            }]
+        })
+        for i in existing_user:
+            api_list.append(str(i))
+        if api_list == []:
+            users.insert({
+                "emaill":request.form['email'],
+                "id":random.randint(1,1000),
+                "name":request.form['name'],
+                "password":bcrypt.hashpw(request.form['pass'].encode('utf-8'),
+                                         bcrypt.gensalt()),
+                "username":request.form['username']
+            })
+            session['username'] = request.form['username']
+            return redirect(url_for('home'))
+
+        return 'That user already exists'
+    else:
+        return  render_template('signup.html')
 
 if __name__ == '__main__':
     create_mongodatabase() 
