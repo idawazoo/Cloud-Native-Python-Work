@@ -15,10 +15,22 @@ class Main extends React.Component {
         ]}
     }
 
+    addTweet(tweet) {
+        let newTweet = this.state.tweets;
+        newTweet.unshift({
+                'id': Date.now(),
+                'name': 'guest',
+                'body': tweet
+            })
+        this.setState({
+            tweets: newTweet
+        })
+    }
+
     render() {
         return (
             <div>
-                <Tweet />
+                <Tweet sendTweet={this.addTweet.bind(this)} />
                 <TweetList tweets={this.state.tweets} />
             </div>
         )
