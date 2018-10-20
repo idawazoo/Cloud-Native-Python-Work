@@ -8,6 +8,7 @@
     "fbjs": "^0.8.11",
     "object-assign": "^4.1.1",
     "react": "^15.4.2",
+    "react-cookies": "0.1.0",
     "react-dev": "0.0.1",
     "react-dom": "^0.14.7",
     "requirejs": "^2.3.3"

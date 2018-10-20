@@ -2,12 +2,14 @@ export default class Tweet extends React.Component {
     render() {
         return(
             <div className="row">
-            <nav/>
             <form>
-                <div>
-                    <textarea ref="tweetTextArea" />
+                <div className="input-field">
+                    <textarea ref="tweetTextArea" className="materialize-textarea" />
                     <label>How you doing?</label>
-                    <button>Tweet now</button>
+                    <button className="btn waves-effect waves-light right">Tweet now
+                        <i className="material-icons right">send
+                        </i>
+                    </button>
                 </div>
             </form>
             </div>
